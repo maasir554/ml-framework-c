@@ -1,4 +1,7 @@
-
+/*
+This file provides functions that directly let us interface 
+the Operatting System to reserve, commit and free virtual memory.
+*/
 #if defined(_WIN32)
 
 #include <windows.h>
