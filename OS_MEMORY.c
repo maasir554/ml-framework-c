@@ -1,3 +1,4 @@
+#include "base.h"
 /*
 This file provides functions that directly let us interface 
 the Operatting System to reserve, commit and free virtual memory.
