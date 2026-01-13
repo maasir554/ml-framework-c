@@ -71,3 +71,35 @@ b32 plat_mem_release(void* ptr, u64 size) {
 }
 
 #endif
+
+#if defined(__EMSCRIPTEN__) || defined(__wasm__)
+
+#include <stdlib.h>
+#include "arena.h"
+
+u32 plat_get_pagesize(void) {
+    return 65536;  // WASM page size is always 64KB
+}
+
+void* plat_mem_reserve(u64 size) {
+    // WASM doesn't have reserve/commit semantics — just allocate
+    return malloc((size_t)size);
+}
+
+b32 plat_mem_commit(void* ptr, u64 size) {
+    (void)ptr; (void)size;
+    return true;  // No-op: memory is already usable after malloc
+}
+
+b32 plat_mem_decommit(void* ptr, u64 size) {
+    (void)ptr; (void)size;
+    return true;  // No-op: can't return memory to OS in WASM
+}
+
+b32 plat_mem_release(void* ptr, u64 size) {
+    (void)size;
+    free(ptr);
+    return true;
+}
+
+#endif
