@@ -1,3 +1,6 @@
+#ifndef BASE_H
+#define BASE_H
+
 #include<stdio.h>
 #include<stdint.h>
 #include<string.h>
@@ -31,3 +34,5 @@ typedef struct{
 #define MiB(n) ((u64)(n) << 20)
 #define GiB(n) ((u64)(n) << 30)
 #define ALIGN_UP_POWER_2(n, p) (((u64)(n) + (u64)(p) - 1)&(~((u64)(p)-1)))
+
+#endif // BASE_H

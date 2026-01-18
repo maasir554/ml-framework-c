@@ -1,3 +1,6 @@
+#ifndef RANDOM_H
+#define RANDOM_H
+
 #include "base.h"
 
 typedef struct { 
@@ -18,3 +21,5 @@ f32 prng_randf(void);
 
 f32 prng_rand_norm_r(prng_state* rng);
 f32 prng_rand_norm(void);
+
+#endif // RANDOM_H

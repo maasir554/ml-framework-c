@@ -11,14 +11,14 @@ static prng_state s_prng_state = {
 void prng_seed_r(prng_state* rng, u64 initstate, u64 initseq){
     rng->state = 0U;
     rng->inc = (initseq << 1u) | 1u;
-    pcg32_random_r(rng);
+    prng_rand_r(rng);
     rng->state += initstate;
-    pcg32_random_r(rng);
+    prng_rand_r(rng);
     rng -> prev_norm = NAN;
 }
 
 void prng_seed(u64 initstate, u64 initseq){
-    pnr_seed_r(&s_prng_state, initstate, initseq);
+    prng_seed_r(&s_prng_state, initstate, initseq);
 }
 
 u32 prng_rand_r(prng_state* rng){

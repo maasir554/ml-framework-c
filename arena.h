@@ -1,3 +1,6 @@
+#ifndef ARENA_H
+#define ARENA_H
+
 #include "base.h"
 
 // Power aligned to powers of two for faster access by CPU
@@ -24,3 +27,5 @@ b32 plat_mem_release(void* ptr, u64 size);
 #define PUSH_STRUCT_NZ(arena, T) (T*)arena_push((arena), sizeof(T), true)
 #define PUSH_ARRAY(arena, T, n) (T*)arena_push((arena), sizeof(T)*(n), false)
 #define PUSH_ARRAY_NZ(arena, T, n) (T*)arena_push((arena), sizeof(T)*(n), true)
+
+#endif // ARENA_H
