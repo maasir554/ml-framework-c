@@ -12,5 +12,5 @@
 the code can be compiled using:
 
 ```bash
-clang main.c arena.c random.c OS_MEMORY.c -o main
+clang main.c arena.c random.c OS_MEMORY.c -o main.out
 ```

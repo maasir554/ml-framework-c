@@ -1,3 +1,4 @@
 *.exe
+*.out
 ./outout
 .DS_Store
