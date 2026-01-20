@@ -65,6 +65,59 @@ b32 mat_sub(matrix* out, const matrix* a, const matrix* b){
     return true;
 }
 
+// _mat_mul_<is `a` transpose><is `b` transpose>
+// n -> not transpose, t -> transpose
+void _mat_mul_nn(matrix*out, matrix*a, matrix*b){
+    for(int i = 0; i < a->rows; i += 1){
+        for(int k = 0; k < b->cols; k += 1){
+            for(int j = 0; j < a->cols; j += 1){
+                // out[i][k] += a[i][j] * b[j][k]
+                out->data[i * b->cols + k] += 
+                    a->data[i * a->cols + j] * b->data[j * b->cols + k];
+            }
+        }
+    }
+}
+
+void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
+    // b is transposed: b'[j][k] = b[k][j]
+    for(int i = 0; i < a->rows; i += 1){
+        for(int k = 0; k < b->rows; k += 1){  // b transposed: cols become rows
+            for(int j = 0; j < a->cols; j += 1){
+                // out[i][k] += a[i][j] * b'[j][k] = a[i][j] * b[k][j]
+                out->data[i * b->rows + k] += 
+                    a->data[i * a->cols + j] * b->data[k * b->cols + j];
+            }
+        }
+    }
+}
+
+void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
+    // a is transposed: a'[i][j] = a[j][i]
+    for(int i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
+        for(int k = 0; k < b->cols; k += 1){
+            for(int j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
+                // out[i][k] += a'[i][j] * b[j][k] = a[j][i] * b[j][k]
+                out->data[i * b->cols + k] += 
+                    a->data[j * a->cols + i] * b->data[j * b->cols + k];
+            }
+        }
+    }
+}
+
+void _mat_mul_tt(matrix*out, matrix*a, matrix*b){
+    // both transposed
+    for(int i = 0; i < a->cols; i += 1){
+        for(int k = 0; k < b->rows; k += 1){
+            for(int j = 0; j < a->rows; j += 1){
+                // out[i][k] += a'[i][j] * b'[j][k] = a[j][i] * b[k][j]
+                out->data[i * b->rows + k] += 
+                    a->data[j * a->cols + i] * b->data[k * b->cols + j];
+            }
+        }
+    }
+}
+
 b32 mat_mul(
     matrix* out, const matrix* a, const matrix* b, 
     b8 zero_out, b8 transpose_a, b8 transpose_b
@@ -80,7 +133,18 @@ b32 mat_mul(
     if(out->rows != rows_a || out->cols != cols_b) return false;
     
     if(zero_out) mat_clear(out);
-    // to be completed
+
+    u32 transpose_config = (transpose_a << 1) | transpose_b;
+
+    switch(transpose_config){
+        case 0b00: _mat_mul_nn(out, a, b); break;
+        case 0b01: _mat_mul_nt(out, a, b); break;
+        case 0b10: _mat_mul_tn(out, a, b); break;
+        case 0b11: _mat_mul_tt(out, a, b); break;
+    }
+
     return true;
 }
+
+
 
