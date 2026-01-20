@@ -24,10 +24,13 @@ typedef struct{
 // but this project, we are going with 2-dimentional arrays.
 
 matrix* mat_create(mem_arena* arena, u32 rows, u32 cols);
-void mat_copy(matrix* dest, matrix* src);
+
+b32 mat_copy(matrix* dest, matrix* src);
 void mat_clear(matrix* mat);
-void mat_fill(matrix* mat, f32 x);
+void mat_fill(matrix* mat, f32 val);
 void mat_scale(matrix* mat, f32 scale);
+
+f32 mat_sum(matrix* mat); // sum of all the elements in the matrix
 
 b32 mat_add(matrix* out, const matrix* a, const matrix* b);
 b32 mat_sub(matrix* out, const matrix* a, const matrix* b);
