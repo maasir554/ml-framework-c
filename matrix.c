@@ -1,6 +1,5 @@
 #include "matrix.h"
 
-
 // Matrix Utility functions: 
 
 matrix* mat_create(mem_arena* arena, u32 rows, u32 cols){
@@ -146,5 +145,24 @@ b32 mat_mul(
     return true;
 }
 
+b32 mat_relu(matrix* out, const matrix* in){
+    if(out->rows != in->rows || out->cols != in->cols) return false;
+    u64 size = (u64)in->rows * in->cols;
+    for(u64 i = 0; i < size; i += 1) out->data[i] = MAX(in->data[i], 0);
+    return true;
+}
 
+// Softmax Function (Neural Network Activation):
+// FORMULA: ReLu(a[i]) = e^(a[i]) / sum(e^(a[i]) form 0 to n)
 
+b32 mat_softmax(matrix* out, const matrix* in){
+    if(out->rows != in->rows || out->cols != in->cols) return false;
+    u64 size = (u64) in->rows * in->cols;
+    f32 smm = 0.0f;
+    for(int i = 0; i < size; i += 1){
+        out->data[i] = expf(in->data[i]);
+        smm += out->data[i];
+    }
+    mat_scale(out, 1.0f / smm);
+    return true;
+}

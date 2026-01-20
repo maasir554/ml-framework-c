@@ -5,6 +5,7 @@
 #include<stdint.h>
 #include<string.h>
 #include<stdbool.h>
+#include <math.h>
 
 // short form for commonly used types
 typedef int8_t i8;
