@@ -67,9 +67,9 @@ b32 mat_sub(matrix* out, const matrix* a, const matrix* b){
 // _mat_mul_<is `a` transpose><is `b` transpose>
 // n -> not transpose, t -> transpose
 void _mat_mul_nn(matrix*out, matrix*a, matrix*b){
-    for(int i = 0; i < a->rows; i += 1){
-        for(int k = 0; k < b->cols; k += 1){
-            for(int j = 0; j < a->cols; j += 1){
+    for(u32 i = 0; i < a->rows; i += 1){
+        for(u32 k = 0; k < b->cols; k += 1){
+            for(u32 j = 0; j < a->cols; j += 1){
                 // out[i][k] += a[i][j] * b[j][k]
                 out->data[i * b->cols + k] += 
                     a->data[i * a->cols + j] * b->data[j * b->cols + k];
@@ -80,9 +80,9 @@ void _mat_mul_nn(matrix*out, matrix*a, matrix*b){
 
 void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
     // b is transposed: b'[j][k] = b[k][j]
-    for(int i = 0; i < a->rows; i += 1){
-        for(int k = 0; k < b->rows; k += 1){  // b transposed: cols become rows
-            for(int j = 0; j < a->cols; j += 1){
+    for(u32 i = 0; i < a->rows; i += 1){
+        for(u32 k = 0; k < b->rows; k += 1){  // b transposed: cols become rows
+            for(u32 j = 0; j < a->cols; j += 1){
                 // out[i][k] += a[i][j] * b'[j][k] = a[i][j] * b[k][j]
                 out->data[i * b->rows + k] += 
                     a->data[i * a->cols + j] * b->data[k * b->cols + j];
@@ -93,9 +93,9 @@ void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
 
 void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
     // a is transposed: a'[i][j] = a[j][i]
-    for(int i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
-        for(int k = 0; k < b->cols; k += 1){
-            for(int j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
+    for(u32 i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
+        for(u32 k = 0; k < b->cols; k += 1){
+            for(u32 j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
                 // out[i][k] += a'[i][j] * b[j][k] = a[j][i] * b[j][k]
                 out->data[i * b->cols + k] += 
                     a->data[j * a->cols + i] * b->data[j * b->cols + k];
@@ -106,9 +106,9 @@ void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
 
 void _mat_mul_tt(matrix*out, matrix*a, matrix*b){
     // both transposed
-    for(int i = 0; i < a->cols; i += 1){
-        for(int k = 0; k < b->rows; k += 1){
-            for(int j = 0; j < a->rows; j += 1){
+    for(u32 i = 0; i < a->cols; i += 1){
+        for(u32 k = 0; k < b->rows; k += 1){
+            for(u32 j = 0; j < a->rows; j += 1){
                 // out[i][k] += a'[i][j] * b'[j][k] = a[j][i] * b[k][j]
                 out->data[i * b->rows + k] += 
                     a->data[j * a->cols + i] * b->data[k * b->cols + j];
@@ -153,16 +153,31 @@ b32 mat_relu(matrix* out, const matrix* in){
 }
 
 // Softmax Function (Neural Network Activation):
-// FORMULA: ReLu(a[i]) = e^(a[i]) / sum(e^(a[i]) form 0 to n)
+// FORMULA: SoftMax(a[i]) = e^(a[i]) / sum(e^(a[i]) form 0 to n)
 
 b32 mat_softmax(matrix* out, const matrix* in){
     if(out->rows != in->rows || out->cols != in->cols) return false;
     u64 size = (u64) in->rows * in->cols;
     f32 smm = 0.0f;
-    for(int i = 0; i < size; i += 1){
+    for(u64 i = 0; i < size; i += 1){
         out->data[i] = expf(in->data[i]);
         smm += out->data[i];
     }
     mat_scale(out, 1.0f / smm);
     return true;
 }
+
+// cross entropy calculation of matrix p and q
+b32 mat_cross_entropy(matrix* out, const matrix* p, const matrix* q){
+    if(out->rows != p->rows || out->cols != p->cols) return false;
+    if(out->rows != q->rows || out->cols != q->cols) return false;
+    u64 size = (u64)out->rows * out->cols;
+    // cross entropy(p,q) = sum(-p[i]*log(q[i]))
+    // for this function, we will not cumpute the sum, but compute the terms instead
+    for(u64 i = 0; i < size; i += 1) 
+        out->data[i] = -p->data[i] * (q->data[i] == 0.0f ? 0.0f: 
+        logf(q->data[i]));
+    
+    return true;
+}
+
