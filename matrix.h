@@ -35,7 +35,7 @@ f32 mat_sum(matrix* mat); // sum of all the elements in the matrix
 b32 mat_add(matrix* out, const matrix* a, const matrix* b);
 b32 mat_sub(matrix* out, const matrix* a, const matrix* b);
 b32 mat_mul(
-    matrix* out, const matrix* s, const matrix* b, 
+    matrix* out, const matrix* a, const matrix* b, 
     b8 zero_out, b8 transpose_a, b8 transpose_b
 );
 
