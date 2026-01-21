@@ -14,3 +14,8 @@ the code can be compiled using:
 ```bash
 clang main.c arena.c random.c OS_MEMORY.c -o main.out
 ```
+
+[21 Jan 2025]
+4. Matix multiplication on CPU with loop optimizations
+
+5. for training model: Mnist dataset (handwritten digits)
