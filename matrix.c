@@ -93,9 +93,9 @@ void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
 
 void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
     // a is transposed: a'[i][j] = a[j][i]
-    for(u32 i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
-        for(u32 k = 0; k < b->cols; k += 1){
-            for(u32 j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
+    for(u32 j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
+        for(u32 i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
+            for(u32 k = 0; k < b->cols; k += 1){
                 // out[i][k] += a'[i][j] * b[j][k] = a[j][i] * b[j][k]
                 out->data[i * b->cols + k] += 
                     a->data[j * a->cols + i] * b->data[j * b->cols + k];
@@ -107,8 +107,8 @@ void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
 void _mat_mul_tt(matrix*out, matrix*a, matrix*b){
     // both transposed
     for(u32 i = 0; i < a->cols; i += 1){
-        for(u32 k = 0; k < b->rows; k += 1){
-            for(u32 j = 0; j < a->rows; j += 1){
+        for(u32 j = 0; j < a->rows; j += 1){
+            for(u32 k = 0; k < b->rows; k += 1){
                 // out[i][k] += a'[i][j] * b'[j][k] = a[j][i] * b[k][j]
                 out->data[i * b->rows + k] += 
                     a->data[j * a->cols + i] * b->data[k * b->cols + j];
@@ -116,6 +116,11 @@ void _mat_mul_tt(matrix*out, matrix*a, matrix*b){
         }
     }
 }
+
+// the nested ordering of i, j, k loops can affect performance by 2 to 10 times
+// optimal scheme: the (A*ROWS + B) expression works best if B is inner most
+// and A(strided) should be higher in the order
+// reason: memory access paterns and cache
 
 b32 mat_mul(
     matrix* out, const matrix* a, const matrix* b, 
