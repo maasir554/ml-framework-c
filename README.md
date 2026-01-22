@@ -19,3 +19,14 @@ clang main.c arena.c random.c OS_MEMORY.c -o main.out
 4. Matix multiplication on CPU with loop optimizations
 
 5. for training model: Mnist dataset (handwritten digits)
+
+# why is python used in this project?
+- Python was used to extract the Mnist dataset from the tensorflow_datasets.
+- the processed data files (.mat) is stored in  /datasets/output/*
+- to generate the test and training data files do the following:
+
+```bash
+cd dataset
+source .venv/bin/activate
+python main.py
+```

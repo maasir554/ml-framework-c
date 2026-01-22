@@ -2,3 +2,8 @@
 *.out
 ./outout
 .DS_Store
+*/.venv
+*/venv
+
+# python generated output files as they are too big (200+ MB)
+/dataset/output/*.mat
