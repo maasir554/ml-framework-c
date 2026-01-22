@@ -50,4 +50,7 @@ b32 mat_relu_add_grad(matrix* out, const matrix* in); // add the gradient of rel
 b32 mat_softmax_add_grad(matrix* out, const matrix* in); // ... of softmax to ...
 b32 mat_cross_entropy_add_grad(matrix* out, const matrix* p, const matrix* q); // ... of cross entropy to ...
 
+// load matrix file from dataset to actual matrix structure
+matrix* mat_load(mem_arena* areana, u32 rows, u32 cols, char* filename);
+
 #endif

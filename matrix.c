@@ -186,3 +186,12 @@ b32 mat_cross_entropy(matrix* out, const matrix* p, const matrix* q){
     return true;
 }
 
+mat_load(mem_arena* arena, u32 rows, u32 cols, char* filename){
+    matrix* mat = mat_create(arena, rows, cols);
+    FILE* f = fopen(filename, "rb");
+    u64 size = ftell(f);
+    fseek(f, sizeof(f32), SEEK_END);
+    size = MIN(size, (u64)sizeof(f32) * rows * cols);
+    fclose(f);
+    return mat;
+}
