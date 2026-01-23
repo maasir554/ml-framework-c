@@ -12,7 +12,7 @@
 the code can be compiled using:
 
 ```bash
-clang main.c arena.c random.c OS_MEMORY.c -o main.out
+clang main.c arena.c random.c OS_MEMORY.c matrix.c -o main.out
 ```
 
 [21 Jan 2025]

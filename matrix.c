@@ -7,7 +7,7 @@ matrix* mat_create(mem_arena* arena, u32 rows, u32 cols){
     matrix* mat = PUSH_STRUCT(arena, matrix);
     mat -> rows = rows;
     mat -> cols = cols;
-    mat -> data = PUSH_ARRAY(arena, matrix, (u64)rows * cols);
+    mat -> data = PUSH_ARRAY(arena, f32, (u64)rows * cols);
 
     return mat;
 }
@@ -34,7 +34,7 @@ void mat_scale(matrix* mat, f32 scale){
     for(u64 i = 0; i < size; i += 1) *(mat->data + i) *= scale; // the commneted above line can be used instead of this.
 }
 
-f32 mat_sum(matrix* mat){
+f32 mat_sum(const matrix* mat){
     u64 size = (u64)mat->rows * mat->cols;
     f32 smm = 0.0f;
     for(u64 i = 0; i < size; i += 1) smm += mat->data [i];
@@ -66,7 +66,7 @@ b32 mat_sub(matrix* out, const matrix* a, const matrix* b){
 
 // _mat_mul_<is `a` transpose><is `b` transpose>
 // n -> not transpose, t -> transpose
-void _mat_mul_nn(matrix*out, matrix*a, matrix*b){
+void _mat_mul_nn(matrix*out, const matrix*a, const matrix*b){
     for(u32 i = 0; i < a->rows; i += 1){
         for(u32 k = 0; k < b->cols; k += 1){
             for(u32 j = 0; j < a->cols; j += 1){
@@ -78,7 +78,7 @@ void _mat_mul_nn(matrix*out, matrix*a, matrix*b){
     }
 }
 
-void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
+void _mat_mul_nt(matrix*out, const matrix*a, const matrix*b){
     // b is transposed: b'[j][k] = b[k][j]
     for(u32 i = 0; i < a->rows; i += 1){
         for(u32 k = 0; k < b->rows; k += 1){  // b transposed: cols become rows
@@ -91,7 +91,7 @@ void _mat_mul_nt(matrix*out, matrix*a, matrix*b){
     }
 }
 
-void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
+void _mat_mul_tn(matrix*out, const matrix*a, const matrix*b){
     // a is transposed: a'[i][j] = a[j][i]
     for(u32 j = 0; j < a->rows; j += 1){  // a transposed: cols become rows
         for(u32 i = 0; i < a->cols; i += 1){  // a transposed: rows become cols
@@ -104,7 +104,7 @@ void _mat_mul_tn(matrix*out, matrix*a, matrix*b){
     }
 }
 
-void _mat_mul_tt(matrix*out, matrix*a, matrix*b){
+void _mat_mul_tt(matrix*out, const matrix*a, const matrix*b){
     // both transposed
     for(u32 i = 0; i < a->cols; i += 1){
         for(u32 j = 0; j < a->rows; j += 1){
@@ -186,7 +186,7 @@ b32 mat_cross_entropy(matrix* out, const matrix* p, const matrix* q){
     return true;
 }
 
-mat_load(mem_arena* arena, u32 rows, u32 cols, char* filename){
+matrix* mat_load(mem_arena* arena, u32 rows, u32 cols, char* filename){
     matrix* mat = mat_create(arena, rows, cols);
     FILE* f = fopen(filename, "rb");
     u64 size = ftell(f);
