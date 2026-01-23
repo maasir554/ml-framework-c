@@ -8,7 +8,14 @@ mem_arena* arena_create(u64 reserve_size, u64 commit_size){
     mem_arena* arena = plat_mem_reserve(reserve_size);
     if(arena == NULL) return NULL;
 
+    if(!plat_mem_commit(arena, commit_size)){
+        plat_mem_release(arena, reserve_size);
+        return NULL;
+    }
+
     arena->reserve_size = reserve_size;
+    arena->commit_size = commit_size;
+    arena->commit_pos = commit_size;
     arena->pos = ARENA_BASE_POS;
 
     return arena;
