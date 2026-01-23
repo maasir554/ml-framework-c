@@ -39,6 +39,10 @@ b32 plat_mem_release(void* ptr, u64 size) {
 #include <unistd.h>
 #include <sys/mman.h>
 
+#ifndef MAP_ANONYMOUS
+#define MAP_ANONYMOUS MAP_ANON
+#endif
+
 #include "arena.h"
 
 u32 plat_get_pagesize(void) {
