@@ -22,8 +22,18 @@ def export_ds_to_files():
     print("Test Images: ", test_images.shape)
     print("Test Lables: ", test_labels.shape)
 
+    # store the images in raw binary for easy access in C
     train_images.tofile('./output/train_images.mat')
     test_images.tofile('./output/test_images.mat')
+    train_labels.tofile('./output/train_labels.mat')
+    test_labels.tofile('./output/test_labels.mat')
+    
+    data = np.fromfile('./output/train_images.mat', dtype=np.float32)
+    
+    print("Total elements:", data.shape)
+    print("Max value:", data.max())
+    print("Non-zero count:", np.count_nonzero(data))
+    
     return
 
 def main():
